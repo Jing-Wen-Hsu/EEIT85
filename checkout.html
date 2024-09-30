@@ -99,7 +99,7 @@
       <div class="container">
         <!-- main-left -->
         <div class="left">
-          {{ name }}
+          {{ city }} {{ 123 }} {{ zipCode}}
           <div class="header-row">
             <h2>配送資訊</h2>
             <div class="checkbox-container">
@@ -123,6 +123,7 @@
                 name="last-name"
                 class="half-width"
                 placeholder="收件人姓氏"
+                v-model="lastName"
               />
             </div>
             <div class="form-row">
@@ -132,6 +133,7 @@
                 name="email"
                 class="full-width"
                 placeholder="電子信箱"
+                v-model="email"
               />
             </div>
             <div class="form-row">
@@ -141,34 +143,42 @@
                 name="phone"
                 class="full-width"
                 placeholder="聯絡電話"
+                v-model="phone"
               />
             </div>
             <div class="form-row">
-              <select id="city" name="city" class="half-width">
-                <option value="" disabled selected>選擇縣市</option>
-                <!-- 台灣縣市 -->
-                <option value="taipei">台北市</option>
-                <option value="newtaipei">新北市</option>
-                <option value="keelung">基隆市</option>
-                <option value="taoyuan">桃園市</option>
-                <option value="hsinchu">新竹市</option>
-                <option value="hsinchucounty">新竹縣</option>
-                <option value="miaoli">苗栗縣</option>
-                <option value="taichung">台中市</option>
-                <option value="chiayi">嘉義市</option>
-                <option value="chiayicounty">嘉義縣</option>
-                <option value="tainan">台南市</option>
-                <option value="kaohsiung">高雄市</option>
-                <option value="pingtung">屏東縣</option>
-                <option value="yilan">宜蘭縣</option>
-                <option value="hualien">花蓮縣</option>
-                <option value="taitung">台東縣</option>
-                <option value="penghu">澎湖縣</option>
-                <option value="jinmen">金門縣</option>
-                <option value="lienchiang">連江縣</option>
+              <select
+                id="city"
+                name="city"
+                class="half-width"
+                v-model="city"
+                @change="updateDistricts"
+              >
+                <option value="" disabled selected>选择县市</option>
+                <option
+                  v-for="(districtObj, cityName) in districts"
+                  :key="cityName"
+                  :value="cityName"
+                >
+                  {{ cityName }}
+                </option>
               </select>
-              <select id="district" name="district" class="half-width">
-                <option value="" disabled selected>選擇區域</option>
+
+              <select
+                id="district"
+                name="district"
+                class="half-width"
+                v-model="area"
+                @change="updateZipCode"
+              >
+                <option value="" disabled selected>选择区域</option>
+                <option
+                  v-for="district in selectedDistricts"
+                  :key="district"
+                  :value="district"
+                >
+                  {{ district }}
+                </option>
               </select>
             </div>
             <div class="form-row">
@@ -179,6 +189,7 @@
                 class="half-width"
                 placeholder="郵遞區號"
                 readonly
+                v-model="zipCode"
               />
             </div>
             <div class="form-row">
@@ -188,6 +199,7 @@
                 name="address"
                 class="full-width"
                 placeholder="地址"
+                v-model="address"
               />
             </div>
             <h3>配送方式</h3>
@@ -222,33 +234,35 @@
 
         <!-- main-right -->
         <div class="right">
-          <div  id="checkout-container" style="width: 80%; justify-items: center">
+          <div
+            id="checkout-container"
+            style="width: 80%; justify-items: center"
+          >
             <h1>商品明細</h1>
             <table>
-              <thead>
-                <tr>
-                  <th>商品圖片</th>　<!--要註解掉-->>
-                  <th>商品名稱</th> <!--要註解掉-->>
-                  <th>單項小計</th> <!--要註解掉-->>
-                  <th>數量</th>    <!--要註解掉-->> 
+              <tbody id="cartItems">
+                <tr v-for="(product, i) in products" :key="i">
+                  <td class="dflex outTd">
+                    <img :src="img" alt="圖片" class="product-image" />
+                    <div class="dflex flexColumn">
+                      <div>{{ product.productName }}</div>
+                      <div>數量:{{ product.quantity }}</div>
+                    </div>
+                    <div class="dflex subtotal">
+                      NT ${{ product.price * product.quantity }}
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody id="cartItems">  
-                <tr v-for="(product, i) in products" :key="i">  
-                  <td><img :src="product.imageURL" alt="圖片" class="product-image" /></td>        
-                  <td>{{ product.productName }}</td>  
-                  <td>NT ${{ product.price * product.quantity }}</td> <!-- 單項小計 -->  
-                  <td>{{ product.quantity }}</td> <!-- 數量 -->  
-                </tr>  
-              </tbody> 
-
+              </tbody>
             </table>
             <div id="items-container"></div>
             <div id="total-container" class="total">
-              <p id="subtotal">商品總額：NT $ {{totalAmount2}}</p>
-              <p id="discount" style="color: #d35b50;">優惠券折抵：NT $ {{"還沒寫"}}</p>
+              <p id="subtotal">商品總額：NT $ {{totalAmount}}</p>
+              <p id="discount" style="color: #d35b50">
+                優惠券折抵：NT $ {{"還沒寫"}}
+              </p>
               <p id="shipping">運費：NT $ {{120}}</p>
-              <p id="shipping">付款總金額：NT $ {{"XXXXXX"}}</p>
+              <p id="shipping">付款總金額：NT $ {{finalAmount}}</p>
               <p id="total" style="font-size: large"></p>
             </div>
           </div>
@@ -305,62 +319,241 @@
     <script src="./checkout.js"></script>
 
     <script type="module">
-      const { createApp, ref, onMounted } = Vue;
+      const { createApp, ref, onMounted, computed } = Vue;
       createApp({
         setup() {
-       //   const params = new URLSearchParams(window.location.search);
-       //   const userId = params.get("userId"); // 取得使用者 ID
-       //   const totalAmount = params.get("totalAmount");
-       //   const finalAmount = params.get("finalAmount");
-       //   const name = ref("");
-
+          const params = new URLSearchParams(window.location.search);
+          const totalAmount = params.get("totalAmount");
+          const finalAmount = params.get("finalAmount");
+          const name = ref("");
+          const img = ref(
+            "https://plus.unsplash.com/premium_photo-1661322640130-f6a1e2c36653?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YXBwbGV8ZW58MHx8MHx8fDA%3D"
+          );
+          const lastName = ref("");
+          const email = ref("");
+          const phone = 0;
+          const city = ref("");
+          const area = ref("");
+          const postCode = 0;
+          const address = ref("");
+          const districts = ref({
+            台北市: {
+              中正區: "100",
+              大同區: "103",
+              中山區: "104",
+              松山區: "105",
+              大安區: "106",
+              萬華區: "108",
+              信義區: "110",
+              士林區: "111",
+              北投區: "112",
+              內湖區: "114",
+              南港區: "115",
+              文山區: "116",
+            },
+            新北市: {
+              三峽區: "237",
+              三興區: "243",
+              三重區: "241",
+              林口區: "244",
+              新店區: "231",
+              新莊區: "242",
+              板橋區: "220",
+              淡水區: "251",
+              汐止區: "207",
+              土城區: "236",
+              永和區: "234",
+              中和區: "235",
+              瑞芳區: "224",
+            },
+            桃園市: {
+              桃園市: "330",
+              中壢市: "320",
+              平鎮市: "324",
+              楊梅市: "326",
+              龜山區: "333",
+              八德區: "334",
+              龍潭區: "325",
+              大溪區: "335",
+              觀音區: "328",
+              新屋區: "327",
+              芦竹區: "338",
+            },
+            台中市: {
+              中區: "400",
+              東區: "401",
+              南區: "402",
+              西區: "403",
+              北區: "404",
+              西屯區: "407",
+              南屯區: "408",
+              北屯區: "406",
+              大里區: "412",
+            },
+            台南市: {
+              中西區: "700",
+              東區: "701",
+              南區: "702",
+              北區: "704",
+              安平區: "708",
+              安南區: "709",
+              永康區: "710",
+              歸仁區: "711",
+              新化區: "712",
+              玉井區: "713",
+              官田區: "714",
+              麻豆區: "715",
+            },
+            高雄市: {
+              苓雅區: "802",
+              鼓山區: "804",
+              左營區: "813",
+              鳳山區: "830",
+              大寮區: "831",
+              大樹區: "833",
+              大社區: "815",
+              小港區: "812",
+              楠梓區: "811",
+              三民區: "807",
+              前鎮區: "806",
+              旗津區: "805",
+            },
+            基隆市: {
+              仁愛區: "200",
+              信義區: "201",
+              中正區: "202",
+              安樂區: "204",
+              七堵區: "205",
+            },
+            新竹市: {
+              東區: "300",
+              北區: "300",
+              香山區: "304",
+            },
+            嘉義縣: {
+              番路鄉: "602",
+              梅山鄉: "603",
+              竹崎鄉: "604",
+              阿里山鄉: "605",
+              中埔鄉: "606",
+              大埔鄉: "607",
+              水上鄉: "608",
+              鹿草鄉: "611",
+              太保市: "612",
+              朴子市: "613",
+              布袋鎮: "614",
+            },
+            嘉義市: {
+              東區: "600",
+              西區: "601",
+            },
+            苗栗縣: {
+              苗栗市: "360",
+              苑裡鎮: "362",
+              公館鄉: "363",
+              竹南鎮: "350",
+              頭份市: "351",
+            },
+            新竹縣: {
+              竹北市: "302",
+              湖口鄉: "303",
+              新豐鄉: "304",
+              新埔鎮: "305",
+            },
+            屏東縣: {
+              屏東市: "900",
+              潮州鎮: "920",
+              恆春鎮: "946",
+              萬丹鄉: "910",
+            },
+            宜蘭縣: {
+              宜蘭市: "260",
+              羅東鎮: "265",
+              冬山鄉: "266",
+              蘇澳鎮: "270",
+            },
+            花蓮縣: {
+              花蓮市: "970",
+              吉安鄉: "971",
+              壽豐鄉: "972",
+              鳳林鎮: "973",
+            },
+            台東縣: {
+              台東市: "950",
+              成功鎮: "951",
+              關山鎮: "952",
+              卑南鄉: "953",
+            },
+            連江縣: {
+              南竿鄉: "209",
+              北竿鄉: "210",
+            },
+            澎湖縣: {
+              馬公市: "880",
+              西嶼鄉: "881",
+              望安鄉: "882",
+            },
+            金門縣: {
+              金門縣: "890",
+            },
+          });
           const api = ref("http://localhost:8080/api");
           const userId = ref(2); // 使用者 ID，這裡假設為 2
           const products = ref([]); // 用來儲存產品的數組
+          const selectedDistricts = ref([]);
+          const zipCode = ref("");
+          const cityName = ref("");
           const totalAmount2 = computed(() => {
-        return products.value.reduce(
-          (total, product) => total + product.quantity * product.price,
-          0
-        );
-      });
-       // 定義獲取資料的函式
+            return products.value.reduce(
+              (total, product) => total + product.quantity * product.price,
+              0
+            );
+          });
+          // 定義獲取資料的函式
           const getCart = async () => {
             const res = await axios.get(`${api.value}/cart/${userId.value}`);
             products.value = res.data; // 將獲取的資料儲存到 products 中
             console.log(products.value);
-
-     
-        //還有折扣碼沒寫!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        const toCheckout = () => {
-            const totalAmount = products.value.reduce(
-              (total, product) => total + product.quantity * product.price,
-              0
-            );
-            console.log(totalAmount);
-            const finalAmount = totalAmount + 120;
-            console.log(finalAmount);
-            const queryParams = new URLSearchParams({
-              userId: userId.value,
-              totalAmount: totalAmount,
-              finalAmount: finalAmount,
-            }).toString();
-
-            // 跳轉到 checkout 頁面，並帶上參數
-            window.location.href = `checkout.html?${queryParams}`;
           };
-
           onMounted(() => {
             getCart(); // 在組件掛載後獲取資料
-            
           });
+
+          // const updateDistricts = () => {
+          //   districts.value = cityDistricts[city.value] || [];
+          // };
+
+          const updateDistricts = () => {
+            selectedDistricts.value = Object.keys(
+              districts.value[city.value] || {}
+            );
+            area.value = ""; // 重置区域选择
+            zipCode.value = ""; // 重置邮递区号
+          };
+
+          const updateZipCode = () => {
+            zipCode.value = districts.value[city.value]?.[area.value] || "";
+          };
 
           return {
             products, // 將 products 暴露給模板
-            add, // 將 add 函式暴露給模板
-            decrease,
-            toCheckout,
-            deleteProduct,
-            totalAmount2
+            name,
+            img,
+            totalAmount,
+            finalAmount,
+            lastName,
+            email,
+            phone,
+            city,
+            area,
+            postCode,
+            address,
+            districts,
+            updateDistricts,
+            selectedDistricts,
+            zipCode,
+            updateZipCode,
+            cityName,
           };
         },
       }).mount("#myContainer"); // 將應用程式掛載到指定的 DOM 元素上

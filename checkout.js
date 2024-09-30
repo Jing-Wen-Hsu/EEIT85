@@ -53,7 +53,7 @@ window.onload = function () {
 
 // 縣市區域及郵遞區號
 const districts = {
-  taipei: {
+  台北市: {
     中正區: "100",
     大同區: "103",
     中山區: "104",
@@ -67,7 +67,7 @@ const districts = {
     南港區: "115",
     文山區: "116",
   },
-  newtaipei: {
+  新北市: {
     三峽區: "237",
     三興區: "243",
     三重區: "241",
@@ -82,7 +82,7 @@ const districts = {
     中和區: "235",
     瑞芳區: "224",
   },
-  taoyuan: {
+  桃園市: {
     桃園市: "330",
     中壢市: "320",
     平鎮市: "324",
@@ -95,7 +95,7 @@ const districts = {
     新屋區: "327",
     芦竹區: "338",
   },
-  taichung: {
+  台中市: {
     中區: "400",
     東區: "401",
     南區: "402",
@@ -106,11 +106,11 @@ const districts = {
     北屯區: "406",
     大里區: "412",
   },
-  tainan: {
+  台南市: {
     中西區: "700",
     東區: "701",
     南區: "702",
-    北區: "704", // 更新
+    北區: "704", 
     安平區: "708",
     安南區: "709",
     永康區: "710",
@@ -120,33 +120,33 @@ const districts = {
     官田區: "714",
     麻豆區: "715",
   },
-  kaohsiung: {
+  高雄市: {
     苓雅區: "802",
     鼓山區: "804",
     左營區: "813",
     鳳山區: "830",
     大寮區: "831",
     大樹區: "833",
-    大社區: "815", // 更新
+    大社區: "815", 
     小港區: "812",
     楠梓區: "811",
     三民區: "807",
     前鎮區: "806",
     旗津區: "805",
   },
-  keelung: {
+  基隆市: {
     仁愛區: "200",
     信義區: "201",
     中正區: "202",
     安樂區: "204",
     七堵區: "205",
   },
-  hsinchu: {
+  新竹市: {
     東區: "300",
     北區: "300",
-    香山區: "304", // 更新
+    香山區: "304", 
   },
-  chiayicounty: { // 嘉義縣
+  嘉義縣: { 
     番路鄉: '602',
     梅山鄉: '603',
     竹崎鄉: '604',
@@ -159,97 +159,100 @@ const districts = {
     朴子市: '613',
     布袋鎮: '614'
   },
-  chiayi: {
+  嘉義市: {
     東區: "600",
     西區: "601",
   },
-  miaoli: {
+  苗栗縣: {
     苗栗市: "360",
     苑裡鎮: "362",
     公館鄉: "363",
     竹南鎮: "350",
     頭份市: "351",
   },
-  hsinchucounty: {
+  新竹縣: {
     竹北市: "302",
     湖口鄉: "303",
     新豐鄉: "304",
     新埔鎮: "305",
   },
-  pingtung: {
+  屏東縣: {
     屏東市: "900",
     潮州鎮: "920",
     恆春鎮: "946",
     萬丹鄉: "910",
   },
-  yilan: {
+  宜蘭縣: {
     宜蘭市: "260",
     羅東鎮: "265",
     冬山鄉: "266",
     蘇澳鎮: "270",
   },
-  hualien: {
+  花蓮縣: {
     花蓮市: "970",
     吉安鄉: "971",
     壽豐鄉: "972",
     鳳林鎮: "973",
   },
-  taitung: {
+  台東縣: {
     台東市: "950",
     成功鎮: "951",
     關山鎮: "952",
     卑南鄉: "953",
   },
-  lienchiang: {
+  連江縣: {
     南竿鄉: "209",
     北竿鄉: "210",
   },
-  penghu: {
+  澎湖縣: {
     馬公市: "880",
     西嶼鄉: "881",
     望安鄉: "882",
   },
-  jinmen: {
+  金門縣: {
     金門縣: "890",
   },
 };
-  
-  document.getElementById("city").addEventListener("change", function () {
-    const city = this.value;
-    const districtSelect = document.getElementById("district");
-    const zipcodeInput = document.getElementById("zipcode");
 
-    // 清空區域和郵遞區號輸入框
-    districtSelect.innerHTML =
-      '<option value="" disabled selected>選擇區域</option>';
-    zipcodeInput.value = "";
+function updateDistricts() {
+  const citySelect = document.getElementById("city-select");
+  const districtSelect = document.getElementById("district-select");
+  const zipcodeSelect = document.getElementById("zipcode-select");
+  const selectedCity = citySelect.value;
 
-    // 根據選擇的城市填入區域選項
-    if (districts[city]) {
-      for (const [district, code] of Object.entries(districts[city])) {
-        const option = document.createElement("option");
-        option.value = district; // 設定區域名稱為選項值
-        option.textContent = district;
-        districtSelect.appendChild(option);
-      }
-    }
-  });
+  // 清空區域和郵遞區號選單
+  districtSelect.innerHTML = '<option value="">請選擇區域</option>';
+  zipcodeSelect.innerHTML = '<option value="">郵遞區號</option>';
 
-  document
-    .getElementById("district")
-    .addEventListener("change", function () {
-      const city = document.getElementById("city").value;
-      const district = this.options[this.selectedIndex].textContent;
-      const zipcodeInput = document.getElementById("zipcode");
+  if (selectedCity) {
+      const districtOptions = Object.keys(districts[selectedCity]);
+      districtOptions.forEach(district => {
+          const option = document.createElement("option");
+          option.value = district;
+          option.textContent = district;
+          districtSelect.appendChild(option);
+      });
+  }
+}
 
-      // 確保 city 和 district 的值正確
-      if (city && districts[city] && districts[city][district]) {
-        zipcodeInput.value = districts[city][district];
-      } else {
-        zipcodeInput.value = "";
-      }
-    });
+function updateZipCode() {
+  const citySelect = document.getElementById("city-select");
+  const districtSelect = document.getElementById("district-select");
+  const zipcodeSelect = document.getElementById("zipcode-select");
+  const selectedCity = citySelect.value;
+  const selectedDistrict = districtSelect.value;
 
+  // 清空郵遞區號選單
+  zipcodeSelect.innerHTML = '<option value="">郵遞區號</option>';
+
+  if (selectedCity && selectedDistrict) {
+      const zipCode = districts[selectedCity][selectedDistrict];
+      const option = document.createElement("option");
+      option.value = zipCode;
+      option.textContent = zipCode;
+      zipcodeSelect.appendChild(option);
+  }
+}
 //以上為縣市區域、郵遞區號
 
 
@@ -303,4 +306,32 @@ const districts = {
 //     .catch(error => {
 //       console.error('Error fetching data:', error);
 //     });
-// });
+// // });
+// const { createApp, ref, onMounted, computed } = Vue;
+
+// createApp({
+//   setup() {
+//     const city = ref("");
+//     const area = ref("");
+//     const districts = ref([]);
+
+//     const cityDistricts = {
+//       "台北市": ["中正區", "大同區", "中山區", "松山區", "大安區", "萬華區", "信義區", "士林區", "北投區", "內湖區", "南港區", "文山區"],
+//       "新北市": ["板橋區", "三峡區", "淡水區", "新莊區", "樹林區", "三芝區", "汐止區", "林口區", "五股區", "八里區", "金山區", "瑞芳區", "貢寮區", "雙溪區", "石碇區", "深坑區", "坪林區", "烏來區"],
+//       // ...其他縣市的區域
+//     };
+
+//     // 當縣市變更時更新區域
+//     const updateDistricts = () => {
+//       districts.value = cityDistricts[city.value] || [];
+//       area.value = ""; // 清空區域選擇
+//     };
+
+//     return {
+//       city,
+//       area,
+//       districts,
+//       updateDistricts,
+//     };
+//   },
+// }).mount("#myContainer");
