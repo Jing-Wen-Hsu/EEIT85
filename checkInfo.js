@@ -51,63 +51,63 @@ window.onload = function () {
 };
 
   
- 
 
 //右半區購買商品明細
-document.addEventListener('DOMContentLoaded', () => {
-  fetch('checkInfo.json')
-    .then(response => response.json())
-    .then(data => {
-      console.log('Data loaded:', data); // 確認 JSON 資料是否正確載入
+// document.addEventListener('DOMContentLoaded', () => {
+//   fetch('checkInfo.json')
+//     .then(response => response.json())
+//     .then(data => {
+//       console.log('Data loaded:', data); // 確認 JSON 資料是否正確載入
 
-      const productList = document.getElementById('items-container');
-      let subtotal = 0;
+//       const productList = document.getElementById('items-container');
+//       let subtotal = 0;
 
-      data.items.forEach(product => {
-        const itemDiv = document.createElement('div');
-        itemDiv.classList.add('item');
+//       data.items.forEach(product => {
+//         const itemDiv = document.createElement('div');
+//         itemDiv.classList.add('item');
 
-        const img = document.createElement('img');
-        img.src = product.image;
-        img.alt = product.name;
+//         const img = document.createElement('img');
+//         img.src = product.image;
+//         img.alt = product.name;
 
-        const detailsDiv = document.createElement('div');
-        detailsDiv.classList.add('item-details');
+//         const detailsDiv = document.createElement('div');
+//         detailsDiv.classList.add('item-details');
 
-        const nameDiv = document.createElement('div');
-        nameDiv.textContent = product.name;
+//         const nameDiv = document.createElement('div');
+//         nameDiv.textContent = product.name;
 
-        const priceDiv = document.createElement('div');
-        priceDiv.classList.add('item-price');
-        priceDiv.textContent = `NT$${product.price}`;
+//         const priceDiv = document.createElement('div');
+//         priceDiv.classList.add('item-price');
+//         priceDiv.textContent = `NT$${product.price}`;
 
-        const quantityDiv = document.createElement('div');
-        quantityDiv.textContent = `數量：${product.quantity}`;
+//         const quantityDiv = document.createElement('div');
+//         quantityDiv.textContent = `數量：${product.quantity}`;
 
-        detailsDiv.appendChild(nameDiv);
-        detailsDiv.appendChild(priceDiv);
-        detailsDiv.appendChild(quantityDiv);
+//         detailsDiv.appendChild(nameDiv);
+//         detailsDiv.appendChild(priceDiv);
+//         detailsDiv.appendChild(quantityDiv);
 
-        itemDiv.appendChild(img);
-        itemDiv.appendChild(detailsDiv);
+//         itemDiv.appendChild(img);
+//         itemDiv.appendChild(detailsDiv);
 
-        productList.appendChild(itemDiv);
+//         productList.appendChild(itemDiv);
 
-        subtotal += product.price * product.quantity;
-      });
+//         subtotal += product.price * product.quantity;
+//       });
 
-      document.getElementById('subtotal').textContent = `商品小計：NT$${data.subtotal}`;
-      document.getElementById('discount').textContent = `優惠碼折抵：NT$${data.discount}`;
-      document.getElementById('shipping').textContent = `運費：NT$${data.shipping}`;
-      document.getElementById('total').textContent = `付款總金額：NT$${data.total}`;
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-    });
-});
+//       document.getElementById('subtotal').textContent = `商品小計：NT$${data.subtotal}`;
+//       document.getElementById('discount').textContent = `優惠碼折抵：NT$${data.discount}`;
+//       document.getElementById('shipping').textContent = `運費：NT$${data.shipping}`;
+//       document.getElementById('total').textContent = `付款總金額：NT$${data.total}`;
+//     })
+//     .catch(error => {
+//       console.error('Error fetching data:', error);
+//     });
+// });
 
 
 //收件人資料
+
 document.addEventListener('DOMContentLoaded', () => {
   // 使用 fetch API 從 checkInfo.json 獲取資料
   fetch('checkInfo.json')
