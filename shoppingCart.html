@@ -127,7 +127,7 @@
               <img src="" alt="圖片" class="product-image" />
             </td>
 
-            <td>{{product.productName}}</td>
+            <td>{{product.name}}</td>
             <td>NT ${{product.price}}</td>
             <!--單價-->
 
@@ -222,7 +222,7 @@
     <script src="./shoppingCart.js"></script>
     <script type="module">
       const { createApp, ref, onMounted, computed } = Vue;
-
+      1;
       createApp({
         setup() {
           const api = ref("http://localhost:8080/api");
@@ -264,14 +264,14 @@
 
           //刪除單一品項商品
           const deleteProduct = async (product) => {
-            console.log(product.productName);
             await axios.delete(
               `${api.value}/cart/delete/${userId.value}/${product.name}`
             );
             getCart(); // 更新購物車資料
           };
 
-          //還有 折扣碼 沒寫!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          //還有 折扣碼 沒寫!!!!!!!!!!!!!!
+
           const toCheckout = () => {
             const totalAmount = products.value.reduce(
               (total, product) => total + product.quantity * product.price,
