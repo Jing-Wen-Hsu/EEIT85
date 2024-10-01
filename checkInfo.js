@@ -1,3 +1,41 @@
+      const { createApp, ref, onMounted, computed } = Vue;
+      createApp({
+        setup() {
+          const params = new URLSearchParams(window.location.search);
+          const totalAmount = params.get("totalAmount");
+          const finalAmount2 = params.get("finalAmount2");
+          //params.get("name2")取出前一頁傳來的name2並用name5接
+          const name5 = params.get("name2")
+
+
+
+
+          onMounted(() => {
+            console.log(1);
+            console.log(totalAmount, finalAmount2);
+            console.log(2);
+            console.log(name5);
+          })
+
+          return {
+
+          }
+          }
+          }).mount("#myContainer")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 window.onload = function () {
   //菜單展開、關閉

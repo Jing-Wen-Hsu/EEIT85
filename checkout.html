@@ -99,7 +99,7 @@
       <div class="container">
         <!-- main-left -->
         <div class="left">
-          {{ city }} {{ 123 }} {{ zipCode}}
+          {{ city }} {{ zipCode}}
           <div class="header-row">
             <h2>配送資訊</h2>
             <div class="checkbox-container">
@@ -221,11 +221,7 @@
               </button>
 
               <!-- 下一步按鈕 -->
-              <button
-                type="button"
-                class="nextstepBtn"
-                onclick="window.location.href='checkInfo.html';"
-              >
+              <button type="button" class="nextstepBtn" @click="toCheckInfo()">
                 下一步
               </button>
             </div>
@@ -245,7 +241,7 @@
                   <td class="dflex outTd">
                     <img :src="img" alt="圖片" class="product-image" />
                     <div class="dflex flexColumn">
-                      <div>{{ product.productName }}</div>
+                      <div>{{ product.name }}</div>
                       <div>數量:{{ product.quantity }}</div>
                     </div>
                     <div class="dflex subtotal">
@@ -322,16 +318,18 @@
       const { createApp, ref, onMounted, computed } = Vue;
       createApp({
         setup() {
+          //接前一頁的參數
           const params = new URLSearchParams(window.location.search);
           const totalAmount = params.get("totalAmount");
           const finalAmount = params.get("finalAmount");
+          //自定義名稱
           const name = ref("");
           const img = ref(
             "https://plus.unsplash.com/premium_photo-1661322640130-f6a1e2c36653?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YXBwbGV8ZW58MHx8MHx8fDA%3D"
           );
           const lastName = ref("");
           const email = ref("");
-          const phone = 0;
+          const phone = ref("");
           const city = ref("");
           const area = ref("");
           const postCode = 0;
@@ -509,12 +507,27 @@
               0
             );
           });
+
+          const toCheckInfo = () => {
+            const totalAmount = totalAmount2.value;
+            const finalAmount2 = totalAmount + 120;
+            //name.value抓這頁的變數 :前的name2是傳出去的變數名稱
+            const queryParams = new URLSearchParams({
+              totalAmount,
+              finalAmount2,
+              name2: name.value,
+            }).toString();
+
+            window.location.href = `CheckInfo.html?${queryParams}`;
+          };
+
           // 定義獲取資料的函式
           const getCart = async () => {
             const res = await axios.get(`${api.value}/cart/${userId.value}`);
             products.value = res.data; // 將獲取的資料儲存到 products 中
             console.log(products.value);
           };
+
           onMounted(() => {
             getCart(); // 在組件掛載後獲取資料
           });
@@ -554,6 +567,7 @@
             zipCode,
             updateZipCode,
             cityName,
+            toCheckInfo,
           };
         },
       }).mount("#myContainer"); // 將應用程式掛載到指定的 DOM 元素上

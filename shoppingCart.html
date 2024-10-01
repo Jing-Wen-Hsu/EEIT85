@@ -222,7 +222,6 @@
     <script src="./shoppingCart.js"></script>
     <script type="module">
       const { createApp, ref, onMounted, computed } = Vue;
-      1;
       createApp({
         setup() {
           const api = ref("http://localhost:8080/api");
@@ -276,10 +275,8 @@
             const totalAmount = products.value.reduce(
               (total, product) => total + product.quantity * product.price,
               0
-            );
-            console.log(totalAmount);
+            );  
             const finalAmount = totalAmount + 120;
-            console.log(finalAmount);
             const queryParams = new URLSearchParams({
               totalAmount: totalAmount,
               finalAmount: finalAmount,
