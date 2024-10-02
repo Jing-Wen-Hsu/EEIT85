@@ -275,7 +275,9 @@
             const totalAmount = products.value.reduce(
               (total, product) => total + product.quantity * product.price,
               0
-            );  
+            );
+
+            //缺少優惠券
             const finalAmount = totalAmount + 120;
             const queryParams = new URLSearchParams({
               totalAmount: totalAmount,

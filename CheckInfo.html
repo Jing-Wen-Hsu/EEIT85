@@ -11,6 +11,8 @@
     <script src="https://unpkg.com/vue@3.2.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
+
+
   <body>
     <!-- menu start-->
     <div id="sidenav" class="tem-overlay">
@@ -98,7 +100,37 @@
     <!-- main-left -->
     <div class="container" id="myContainer">
       <div class="left">
-        <div class="header-row">
+        <div class="infoTable">
+          <table>
+            <tbody>
+                <tr>
+                    <td>名字：</td>
+                    <td id="name">{{lastName2+name5}}</td>
+                </tr>
+                <tr>
+                  <td>電子信箱：</td>
+                  <td id="email">{{email}}</td>
+                </tr>
+                <tr>
+                  <td>聯絡電話：</td>
+                  <td id="phone">{{phone}}</td>
+                </tr>
+                <tr>
+                  <td>地址：</td>
+                  <td id="address">{{ zipCode+ city+
+                    area
+                   
+        }}</td>
+                </tr>
+                <tr>
+                    <td>配送方式：</td>
+                    <td>冷凍－黑貓宅急便</td>
+                </tr>
+            </tbody>
+            </tbody>
+          </table>
+        </div>
+        <!-- <div class="header-row">
           <div class="contact-info">
             <p><strong>收件人：</strong> <span id="name"></span></p>
             <hr />
@@ -112,7 +144,7 @@
               <strong>配送方式：</strong> <span id="delivery_method"></span>
             </p>
           </div>
-        </div>
+        </div> -->
 
         <div class="updateBtn">
           <!-- 修改資料按鈕 -->
@@ -139,11 +171,33 @@
       <div class="right">
         <div id="checkout-container" style="width: 80%; justify-items: center">
           <h1>商品明細</h1>
+          <table>
+            <tbody id="cartItems">
+              <tr v-for="(product, i) in products" :key="i">
+                <td class="dflex outTd">
+                  <img :src="img" alt="圖片" class="product-image" />
+
+                  <div class="dflex flexColumn">
+                    <div>{{ product.name }}</div>
+
+                    <div>數量:{{ product.quantity }}</div>
+                  </div>
+
+                  <div class="dflex subtotal">
+                    NT ${{ product.price * product.quantity }}
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
           <div id="items-container"></div>
           <div id="total-container" class="total">
-            <p id="subtotal"></p>
-            <p id="discount"></p>
-            <p id="shipping"></p>
+            <p id="subtotal">商品總額：NT $ {{totalAmount}}</p>
+            <p id="discount" style="color: #d35b50">
+              優惠券折抵：NT $ {{"還沒寫"}}
+            </p>
+            <p id="shipping">運費：NT $ {{120}}</p>
+            <p id="shipping">付款總金額：NT $ {{finalAmount2}}</p>
             <p id="total" style="font-size: large"></p>
           </div>
         </div>
@@ -196,6 +250,7 @@
       </div>
     </footer>
     <!-- footer end -->
+
     <script src="./checkInfo.js"></script>
   </body>
 </html>

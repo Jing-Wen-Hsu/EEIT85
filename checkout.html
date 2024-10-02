@@ -154,7 +154,7 @@
                 v-model="city"
                 @change="updateDistricts"
               >
-                <option value="" disabled selected>选择县市</option>
+                <option value="" disabled selected>選擇縣市</option>
                 <option
                   v-for="(districtObj, cityName) in districts"
                   :key="cityName"
@@ -171,7 +171,7 @@
                 v-model="area"
                 @change="updateZipCode"
               >
-                <option value="" disabled selected>选择区域</option>
+                <option value="" disabled selected>選擇區域</option>
                 <option
                   v-for="district in selectedDistricts"
                   :key="district"
@@ -188,7 +188,6 @@
                 name="zipcode"
                 class="half-width"
                 placeholder="郵遞區號"
-                readonly
                 v-model="zipCode"
               />
             </div>
@@ -318,10 +317,11 @@
       const { createApp, ref, onMounted, computed } = Vue;
       createApp({
         setup() {
-          //接前一頁的參數
+          //接收到的前一頁的參數
           const params = new URLSearchParams(window.location.search);
           const totalAmount = params.get("totalAmount");
           const finalAmount = params.get("finalAmount");
+
           //自定義名稱
           const name = ref("");
           const img = ref(
@@ -508,17 +508,26 @@
             );
           });
 
+          //要傳遞出去的參數  缺少優惠券
           const toCheckInfo = () => {
             const totalAmount = totalAmount2.value;
             const finalAmount2 = totalAmount + 120;
+
             //name.value抓這頁的變數 :前的name2是傳出去的變數名稱
             const queryParams = new URLSearchParams({
               totalAmount,
               finalAmount2,
-              name2: name.value,
+              name2: name.value, //收件人的名字
+              lastName: lastName.value,
+              email: email.value,
+              city: city.value,
+              area: area.value,
+              zipCode: zipCode.value,
+              address: address.value,
+              phone: phone.value,
             }).toString();
 
-            window.location.href = `CheckInfo.html?${queryParams}`;
+            window.location.href = `checkInfo.html?${queryParams}`;
           };
 
           // 定義獲取資料的函式
@@ -540,8 +549,8 @@
             selectedDistricts.value = Object.keys(
               districts.value[city.value] || {}
             );
-            area.value = ""; // 重置区域选择
-            zipCode.value = ""; // 重置邮递区号
+            area.value = ""; // 重置區域選擇
+            zipCode.value = ""; // 重置郵遞區號
           };
 
           const updateZipCode = () => {

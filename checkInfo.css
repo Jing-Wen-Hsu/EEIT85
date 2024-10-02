@@ -5,6 +5,52 @@
   box-sizing: border-box;
 }
 
+.subtotal {
+  margin-left: auto;
+  align-items: center;
+}
+.outTd {
+  /* align-items: center; */
+}
+.flexColumn {
+  flex-direction: column;
+  padding-left: 5px;
+  justify-content: space-between;
+}
+.dflex {
+  display: flex;
+}
+/* 只對 tbody 內的元素設置邊框 */
+table {
+  width: 100%;
+  border-collapse: collapse; /* 使邊框合併成一條線 */
+}
+tbody td {
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  padding: 10px;
+}
+.product-image {
+  /* width: 25px;
+  height: 25px; */
+}
+.product-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.infoTable {
+  margin-top: 95px;
+  border: 2px solid rgb(111, 184, 111); /* 整個外邊框 */
+  border-radius: 15px;
+}
+.infoTable td {
+  border-bottom: 1px solid rgb(111, 184, 111);
+  border-top: 1px solid rgba(192, 71, 71, 0);
+  padding: 10px;
+}
+
 body {
   font-family: Arial, sans-serif;
   width: 100vw;
